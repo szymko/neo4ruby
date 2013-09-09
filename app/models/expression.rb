@@ -23,11 +23,23 @@ class Expression
 
   # decorators for finding and creating expressions
 
-  def self.find_or_create(attr_name, attr_val)
-    e = Expression.find("#{attr_name}: attr_val").first
-    e = transaction { Expression.create(attr_name.to_sym => attr_val) } unless e
-
-    e
+  def self.transaction_create(attrs = {})
+    transaction { Expression.create(attrs) }
   end
 
+  def self.destroy_all
+    all.each do |el|
+      transaction { el.del }
+    end
+  end
+
+  class << self
+    alias :delete_all :destroy_all
+  end
+
+  def self.find_or_create(attrs)
+    e = Expression.find(attrs).first
+    e ||= transaction_create(attrs)
+    e
+  end
 end
