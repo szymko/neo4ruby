@@ -56,8 +56,16 @@ class ExpressionTest < MiniTest::Unit::TestCase
   def test_it_knows_following_expressions
      create_two_expressions
 
-    @e1.create_sequence(@e2, dir: :incoming)
-    assert_equal @e2.outgoing(:sequence).to_a, @e2.following
+    @e1.create_sequence(@e2, dir: :outgoing)
+    assert_equal @e1.outgoing(:sequence).to_a, @e1.following
+  end
+
+  def test_it_finds_linked_expression
+    create_two_expressions
+    @e1.create_sequence(@e2, dir: :outgoing)
+
+    @e1.find_or_create_outgoing(@e2)
+    assert_equal 1, @e1.following.count
   end
 
   private
