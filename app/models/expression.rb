@@ -2,7 +2,6 @@ class Expression
 
   include Neo4j::NodeMixin
   include Shared::Neo4jTransaction
-  include Relations::ArticleExpression
 
   rule(:all)
 
@@ -40,6 +39,28 @@ class Expression
   def self.find_or_create(attrs)
     e = Expression.find(attrs).first
     e ||= transaction_create(attrs)
-    e
+  end
+
+  def preceding
+    incoming(:sequence).to_a
+  end
+
+  def following
+    outgoing(:sequence).to_a
+  end
+
+  def find_or_create_outgoing(expr)
+    rels.find{ |s| s.end_node.word == expr.word } || create_sequence(expr, dir: :outgoing)
+  end
+
+  def create_sequence(expr, opts = {})
+    # pre 2.0 default opts style
+    opts = { dir: :outgoing }.merge(opts)
+    raise ArgumentError unless opts[:dir] == :outgoing || opts[:dir] == :incoming
+
+    e1 = (opts[:dir] == :outgoing ? self : expr)
+    e2 = (e1 == self ? expr : self)
+
+    Sequence.transaction_create(e1, e2)
   end
 end

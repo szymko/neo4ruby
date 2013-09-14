@@ -5,9 +5,8 @@ class Sequence
   property :strength
   index :strength
 
-  def self.create(from_node, to_node)
-    s = transaction { Sequence.create(:sequence, from_node, to_node) }
-    s
+  def self.transaction_create(from_node, to_node)
+    transaction { Sequence.create(:sequence, from_node, to_node) }
   end
 
   def get_prop(prop)
