@@ -1,3 +1,5 @@
+require 'uri'
+
 class Expression
 
   include Neo4j::NodeMixin
@@ -7,6 +9,9 @@ class Expression
 
   property :word
   index :word
+
+  property :urls
+  index :urls
 
   has_n(:sequence).to(Expression).relationship(Sequence)
   has_n(:sequence).from(Expression, :sequence).relationship(Sequence)
@@ -20,26 +25,7 @@ class Expression
   # Neo4j::Transaction.run { s.strength = 0.3 }
   # e3.incoming(:sequence).rels.first.props
 
-  # decorators for finding and creating expressions
-
-  def self.transaction_create(attrs = {})
-    transaction { Expression.create(attrs) }
-  end
-
-  def self.destroy_all
-    all.each do |el|
-      transaction { el.del }
-    end
-  end
-
-  class << self
-    alias :delete_all :destroy_all
-  end
-
-  def self.find_or_create(attrs)
-    e = Expression.find(attrs).first
-    e ||= transaction_create(attrs)
-  end
+  ## instance methods
 
   def preceding
     incoming(:sequence).to_a
@@ -62,5 +48,41 @@ class Expression
     e2 = (e1 == self ? expr : self)
 
     Sequence.transaction_create(e1, e2)
+  end
+
+  def add_url(url)
+    urls = self.urls || []
+    urls = (urls << url).uniq
+
+    raise ArgumentError unless url =~ /^#{URI::regexp}$/
+
+    set_prop(:urls, urls.uniq) unless urls == self.urls
+  end
+
+  ## class methods
+
+  # decorators for finding and creating expressions
+
+  def self.transaction_create(attrs = {})
+    transaction { Expression.create(attrs) }
+  end
+
+  def self.destroy_all
+    all.each do |el|
+      transaction { el.del }
+    end
+  end
+
+  def self.find_or_create(attrs)
+    e = Expression.find(attrs).first
+    e ||= transaction_create(attrs)
+  end
+
+  def self.count
+    Expression.all.to_a.count
+  end
+
+  class << self
+    alias :delete_all :destroy_all
   end
 end

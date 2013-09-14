@@ -1,6 +1,9 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    amq-protocol (1.7.0)
+    bunny (0.10.6)
+      amq-protocol (>= 1.6.0)
     coderay (1.0.9)
     ffi (1.9.0-java)
     method_source (0.8.2)
@@ -24,5 +27,6 @@ PLATFORMS
   java
 
 DEPENDENCIES
+  bunny (>= 0.10.0)
   neo4j-wrapper
   pry

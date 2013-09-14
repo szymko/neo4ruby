@@ -4,74 +4,87 @@ class ExpressionTest < MiniTest::Unit::TestCase
 
   def setup
     Expression.delete_all
+    create_two_expressions
   end
 
   def test_it_creates_expression
-    assert_equal Expression.all.to_a.count, 0
-
-    Expression.transaction_create(word: 'Mariusz')
-    assert_equal Expression.all.to_a.count, 1
+    assert_changed_by(1) { Expression.transaction_create(word: 'Mariusz') }
   end
 
   def test_it_finds_existing_expression
-    assert_equal Expression.all.to_a.count, 0
-
-    2.times do
-      Expression.find_or_create(word: 'Pszemek')
-      assert_equal Expression.all.to_a.count, 1
+    assert_changed_by(1) do
+      2.times { Expression.find_or_create(word: 'Pszemek') }
     end
-  end
-
-  def test_it_destroys_expression_after_cases
-    assert_equal Expression.all.to_a.count, 0
   end
 
   def test_it_creates_incoming_sequence
-    create_two_expressions
-
-    @e1.create_sequence(@e2, dir: :incoming)
-    assert_equal @e1.incoming(:sequence).to_a,  [@e2]
-    assert_equal @e2.outgoing(:sequence).to_a,  [@e1]
+    @expression1.create_sequence(@expression2, dir: :incoming)
+    assert_equal @expression1.incoming(:sequence).to_a,  [@expression2]
+    assert_equal @expression2.outgoing(:sequence).to_a,  [@expression1]
   end
 
   def test_it_creates_outgoing_sequence
-    2.times do |t|
-      create_two_expressions
+    @expression1.create_sequence(@expression2, dir: :outgoing)
+    assert_equal @expression1.outgoing(:sequence).to_a,  [@expression2]
+    assert_equal @expression2.incoming(:sequence).to_a,  [@expression1]
+  end
 
-      t == 0 ? @e1.create_sequence(@e2, dir: :outgoing) : @e1.create_sequence(@e2)
-      assert_equal @e1.outgoing(:sequence).to_a,  [@e2]
-      assert_equal @e2.incoming(:sequence).to_a,  [@e1]
-
-      Expression.delete_all
-    end
+  def test_it_creates_outgoing_sequence_by_default
+    @expression1.create_sequence(@expression2)
+    assert_equal @expression1.outgoing(:sequence).to_a,  [@expression2]
+    assert_equal @expression2.incoming(:sequence).to_a,  [@expression1]
   end
 
   def test_it_knows_preceding_expressions
-    create_two_expressions
-
-    @e1.create_sequence(@e2, dir: :incoming)
-    assert_equal @e1.incoming(:sequence).to_a, @e1.preceding
+    @expression1.create_sequence(@expression2, dir: :incoming)
+    assert_equal @expression1.incoming(:sequence).to_a, @expression1.preceding
   end
 
   def test_it_knows_following_expressions
-     create_two_expressions
-
-    @e1.create_sequence(@e2, dir: :outgoing)
-    assert_equal @e1.outgoing(:sequence).to_a, @e1.following
+    @expression1.create_sequence(@expression2, dir: :outgoing)
+    assert_equal @expression1.outgoing(:sequence).to_a, @expression1.following
   end
 
   def test_it_finds_linked_expression
-    create_two_expressions
-    @e1.create_sequence(@e2, dir: :outgoing)
+    @expression1.create_sequence(@expression2, dir: :outgoing)
+    @expression1.find_or_create_outgoing(@expression2)
+    assert_equal 1, @expression1.following.count
+  end
 
-    @e1.find_or_create_outgoing(@e2)
-    assert_equal 1, @e1.following.count
+  def test_it_adds_urls
+    url1 = "http://www.google.pl"
+    url2 = "https://www.facebook.com/Mariusz#alol"
+
+    @expression1.add_url(url1)
+    assert_equal [url1], @expression1.urls
+
+    @expression1.add_url(url2)
+    assert_equal [url1, url2].sort, @expression1.urls.sort
+  end
+
+  def test_it_raises_error_on_invalid_urls
+    invalid_url = "http/:aawef.aff"
+    assert_raises(ArgumentError) { @expression1.add_url(invalid_url) }
+  end
+
+  def test_urls_arent_duplicated
+    url = "http://example.com"
+    2.times { @expression1.add_url(url) }
+
+    assert_equal 1, @expression1.urls.count
   end
 
   private
 
   def create_two_expressions
-    @e1 = Expression.transaction_create(word: 'Citation')
-    @e2 = Expression.transaction_create(word: 'needed')
+    @expression1 = Expression.transaction_create(word: 'Citation')
+    @expression2 = Expression.transaction_create(word: 'needed')
+  end
+
+  def assert_changed_by(numbr)
+    current = Expression.count
+    yield
+
+    assert numbr, Expression.count - current
   end
 end
