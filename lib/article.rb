@@ -2,6 +2,10 @@ class Article
 
   attr_accessor :chain, :word_ary, :url
 
+  def initialize(experiment_name)
+    @experiment_name = experiment_name
+  end
+
   def sequence_feed(word_ary, url)
     @word_ary = word_ary
     @url = url
@@ -13,7 +17,7 @@ class Article
   end
 
   def adjust_weights(associative_engine)
-    @chain.each { |expr| associative_engine.adjust_wieghts(expr) }
+    @chain.each { |expr| associative_engine.adjust_weights(expr) }
   end
 
   def self.find
@@ -23,7 +27,7 @@ class Article
 
   def create_representation(word_ary, url)
     word_ary.inject([]) do |chain, expr|
-      e = Expression.find_or_create(word: expr)
+      e = Expression.find_or_create(word: expr, experiment: @experiment_name)
       e.add_url(url)
       chain << e
     end

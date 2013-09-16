@@ -7,11 +7,9 @@ class Expression
 
   rule(:all)
 
-  property :word
-  index :word
-
-  property :urls
-  index :urls
+  property :word, index: :exact
+  property :urls, index: :exact
+  property :experiment, index: :exact
 
   has_n(:sequence).to(Expression).relationship(Sequence)
   has_n(:sequence).from(Expression, :sequence).relationship(Sequence)
@@ -80,6 +78,10 @@ class Expression
 
   def self.count
     Expression.all.to_a.count
+  end
+
+  def self.from_experiment(experiment_name)
+    Expression.find(experiment: experiment_name).to_a
   end
 
   class << self

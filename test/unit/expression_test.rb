@@ -17,6 +17,10 @@ class ExpressionTest < MiniTest::Unit::TestCase
     end
   end
 
+  def test_it_destroys_all
+    assert_changed_by(Expression.count) { Expression.destroy_all }
+  end
+
   def test_it_creates_incoming_sequence
     @expression1.create_sequence(@expression2, dir: :incoming)
     assert_equal @expression1.incoming(:sequence).to_a,  [@expression2]
@@ -74,11 +78,19 @@ class ExpressionTest < MiniTest::Unit::TestCase
     assert_equal 1, @expression1.urls.count
   end
 
+  def test_it_returns_expressions_from_given_experiment
+    Expression.transaction_create(word: 'badly', experiment: 'E1')
+
+    assert_equal 2, Expression.from_experiment('E1').length
+    assert_equal 1, Expression.from_experiment('E2').length
+    assert_equal 0, Expression.from_experiment('E3').length
+  end
+
   private
 
   def create_two_expressions
-    @expression1 = Expression.transaction_create(word: 'Citation')
-    @expression2 = Expression.transaction_create(word: 'needed')
+    @expression1 = Expression.transaction_create(word: 'Citation', experiment: 'E1')
+    @expression2 = Expression.transaction_create(word: 'needed', experiment: 'E2')
   end
 
   def assert_changed_by(numbr)

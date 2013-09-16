@@ -4,10 +4,11 @@ class ArticleTest < MiniTest::Unit::TestCase
   def setup
     @url = 'htttp://en.wikipedia.org/'
     @feed = ['Citation', 'needed']
+    @experiment = 'Dexters Lab, here I come!'
   end
 
   def test_it_creates_sequence_feed
-    @article = Article.new
+    @article = Article.new(@experiment)
 
     @article.sequence_feed(@feed, @url)
 
