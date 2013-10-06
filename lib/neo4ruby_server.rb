@@ -2,18 +2,22 @@ require 'bunny'
 
 class Neo4rubyServer
 
+  attr_accessor :processor
+
   def initialize(payload_processor)
     @processor = payload_processor
   end
 
-  def open
+  def open(opts = {})
+    shutdown() if opts[:reopen]
+
     @conn = Bunny.new
     @conn.start
     @ch = @conn.create_channel
   end
 
   def listen(queue_name, separator = ',')
-    open
+    open(reopen: true) unless open?
 
     @queue = @ch.queue(queue_name)
     @exchange = @ch.default_exchange
@@ -27,15 +31,18 @@ class Neo4rubyServer
   end
 
   def shutdown
-    @ch.close
-    @conn.close
+    @ch.close if can_close?(@ch)
+    @conn.close if can_close?(@conn)
+  end
+
+  def open?
+    @conn && @conn.open? && @ch && @ch.open?
+  end
+
+  private
+
+  def can_close?(bunny_obj)
+    !! bunny_obj && bunny_obj.open?
   end
 
 end
-
-# begin
-#   server = Neo4rubyServer.new
-#   server.listen("rpc_queue")
-# rescue Interrupt => _
-#   server.shutdown
-# end

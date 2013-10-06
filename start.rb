@@ -1,32 +1,21 @@
 #!/usr/bin/env ruby
-require 'optparse'
+require_relative './lib/server_manager'
 
-require_relative './app/neo4ruby'
-# run
+trap("INT"){ exit() }
 
-options = {}
-OptionParser.new do |opts|
-  opts.banner = "Usage: neo4ruby.rb [options]"
+begin
+  manager = ServerManager.new
+  manager.parse_command_line()
+  manager.run()
 
-  opts.on("-q", "--queue NAME", "Set queue name") do |o|
-    options[:queue] = o
+rescue Exception => e
+
+  unless e.is_a? SystemExit
+    puts "#{e.message}: #{e.inspect}"
+    puts e.backtrace
   end
 
-  opts.on("-d", "--debug", "Start server in a debug mode") do |o|
-    options[:debug] = o
-  end
-end.parse!
-
-loop do
-  begin
-    p options
-    raise Interrupt
-    payload_processor = PayloadProcessor.new
-
-    server = Neo4rubyServer.new(payload_processor)
-    server.listen(options[:queue] || "neo4ruby")
-  rescue Interrupt => _
-    # server.shutdown
-    break
-  end
+ensure
+  manager ||= nil
+  manager.stop() if manager
 end

@@ -9,3 +9,8 @@ require_relative './models/expression'
 require_relative '../lib/article'
 require_relative '../lib/neo4ruby_server'
 require_relative '../lib/payload_processor'
+require_relative '../lib/option_entry'
+
+
+PROCESSOR_LIST = [PayloadProcessor]
+DEFAULT_PROCESSOR = PayloadProcessor
