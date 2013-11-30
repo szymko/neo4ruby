@@ -6,7 +6,10 @@ GEM
       amq-protocol (>= 1.6.0)
     coderay (1.0.9)
     ffi (1.9.0-java)
+    metaclass (0.0.1)
     method_source (0.8.2)
+    mocha (0.14.0)
+      metaclass (~> 0.0.1)
     neo4j-community (1.9.2-java)
     neo4j-core (2.3.0-java)
       neo4j-community (>= 1.9.M05, < 2.0)
@@ -28,5 +31,6 @@ PLATFORMS
 
 DEPENDENCIES
   bunny (>= 0.10.0)
+  mocha
   neo4j-wrapper
   pry

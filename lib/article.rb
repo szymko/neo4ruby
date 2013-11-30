@@ -29,6 +29,7 @@ class Article
     word_ary.inject([]) do |chain, expr|
       e = Expression.find_or_create(word: expr, experiment: @experiment_name)
       e.add_url(url)
+      p e.word
       chain << e
     end
   end

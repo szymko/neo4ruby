@@ -6,3 +6,4 @@ source 'https://rubygems.org/'
 gem 'neo4j-wrapper'
 gem 'pry'
 gem 'bunny', '>= 0.10.0'
+gem 'mocha', require: false
