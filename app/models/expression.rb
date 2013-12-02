@@ -10,6 +10,7 @@ class Expression
   property :word, index: :exact
   property :urls, index: :exact
   property :experiment, index: :exact
+  property :count
 
   has_n(:sequence).to(Expression).relationship(Sequence)
   has_n(:sequence).from(Expression, :sequence).relationship(Sequence)
@@ -18,7 +19,7 @@ class Expression
   # Usage
   # e3 = Neo4j::Transaction.run { Expression.create  }
   # e1 = Expression.find('word: weronika').first
-  #  s = Neo4j::Transaction.run { Sequence.create(:sequence, e1, e3) }
+  # s = Neo4j::Transaction.run { Sequence.create(:sequence, e1, e3) }
   # Neo4j::Transaction.run { s.strength = 0.3 }
   # Neo4j::Transaction.run { s.strength = 0.3 }
   # e3.incoming(:sequence).rels.first.props
@@ -34,7 +35,8 @@ class Expression
   end
 
   def find_or_create_outgoing(expr)
-    rels.find{ |s| s.end_node.word == expr.word } || create_sequence(expr, dir: :outgoing)
+    (rels.find{ |s| s.end_node.word == expr.word && s.is_a?(Sequence) } ||
+    create_sequence(expr, dir: :outgoing))
   end
 
   def create_sequence(expr, opts = {})
@@ -55,6 +57,10 @@ class Expression
     raise ArgumentError unless url =~ /^#{URI::regexp}$/
 
     set_prop(:urls, urls.uniq) unless urls == self.urls
+  end
+
+  def sequences
+    self.rels(:outgoing, :sequence).to_a
   end
 
   ## class methods

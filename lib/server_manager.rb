@@ -1,8 +1,6 @@
 require 'set'
 require 'optparse'
 
-require_relative '../app/neo4ruby'
-
 class ServerManager
 
   DEFAULT_QUEUE = "neo4ruby"

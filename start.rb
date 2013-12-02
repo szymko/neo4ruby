@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-require_relative './lib/server_manager'
+require_relative './app/neo4ruby'
 
 trap("INT"){ exit() }
 

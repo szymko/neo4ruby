@@ -17,14 +17,20 @@ GEM
     neo4j-cypher (1.0.0)
     neo4j-wrapper (2.3.0-java)
       neo4j-core (= 2.3.0)
+    pry (0.9.12.2)
+      coderay (~> 1.0.5)
+      method_source (~> 0.8)
+      slop (~> 3.4)
     pry (0.9.12.2-java)
       coderay (~> 1.0.5)
       method_source (~> 0.8)
       slop (~> 3.4)
       spoon (~> 0.0)
+    redis (3.0.6)
     slop (3.4.6)
     spoon (0.0.4)
       ffi
+    text (1.2.3)
 
 PLATFORMS
   java
@@ -34,3 +40,5 @@ DEPENDENCIES
   mocha
   neo4j-wrapper
   pry
+  redis
+  text

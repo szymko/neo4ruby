@@ -1,16 +1,11 @@
 require 'neo4j-wrapper'
 
-project_root = File.dirname(File.absolute_path(__FILE__))
-require_relative './concerns/shared/neo4j_transaction'
+PROJECT_ROOT = File.join(File.dirname(File.absolute_path(__FILE__)), '/..')
 
-require_relative './models/sequence'
-require_relative './models/expression'
-
-require_relative '../lib/article'
-require_relative '../lib/neo4ruby_server'
-require_relative '../lib/payload_processor'
-require_relative '../lib/option_entry'
-
-
+Dir.glob(PROJECT_ROOT + "/lib/**/*.rb").each { |f| require f }
+Dir.glob(PROJECT_ROOT + "/app/concerns/**/*.rb").each { |f| require f }
+#Dir.glob(PROJECT_ROOT + "/app/models/*.rb").each { |f| require f }
+require_relative 'models/sequence' 
+require_relative 'models/expression' 
 PROCESSOR_LIST = [PayloadProcessor]
 DEFAULT_PROCESSOR = PayloadProcessor
