@@ -6,10 +6,9 @@ class PayloadProcessor
     @strategies = strategies
   end
 
-  def run(opts) #opts = { page: ..., expression_class:, experiment:, assoc_engine:  }
+  def run(opts) #opts = { page: , experiment: , graph_builder:  }
     payload = parse(opts[:page])
-    builder = ExpressionBuilder.new(opts)
-    builder.insert(payload)
+    opts[:builder].build(payload, opts)
     "OK"
   end
 
