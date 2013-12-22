@@ -1,13 +1,13 @@
 module PayloadProcessingStrategies
 
   class Splitter < PayloadProcessingStrategies::BasicStrategy
- 
+
     def initialize(opts)
       @rule = choose_rule(opts[:type], opts[:rule])
     end
 
     def concrete_perform(payload)
-      payload.scan(@rule)
+      payload.scan(@rule).map { |s| s.is_a?(Array) ? s.first : s }.flatten
     end
 
     private

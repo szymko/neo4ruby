@@ -1,10 +1,19 @@
 require_relative '../test_helper'
+require 'pry'
+
+MiniTest::Unit.runner = DbTest::Unit.new
 
 class ExpressionTest < MiniTest::Unit::TestCase
 
+  include TestHelper
+
   def setup
-    Expression.delete_all
-    create_two_expressions
+    @expression1 = Expression.transaction_create(word: 'Citation', experiment: 'E1')
+    @expression2 = Expression.transaction_create(word: 'needed', experiment: 'E2')
+  end
+
+  def teardown
+    Expression.destroy_all
   end
 
   def test_it_creates_expression
@@ -88,15 +97,10 @@ class ExpressionTest < MiniTest::Unit::TestCase
 
   private
 
-  def create_two_expressions
-    @expression1 = Expression.transaction_create(word: 'Citation', experiment: 'E1')
-    @expression2 = Expression.transaction_create(word: 'needed', experiment: 'E2')
-  end
-
   def assert_changed_by(numbr)
     current = Expression.count
     yield
 
-    assert numbr, Expression.count - current
+    assert numbr, (current - Expression.count).abs
   end
 end

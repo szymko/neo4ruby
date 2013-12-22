@@ -78,8 +78,7 @@ class Expression
   end
 
   def self.find_or_create(attrs)
-    e = Expression.find(attrs).first
-    e ||= transaction_create(attrs)
+    Expression.find(attrs).first || transaction_create(attrs)
   end
 
   def self.count

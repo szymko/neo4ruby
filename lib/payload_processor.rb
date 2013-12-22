@@ -2,11 +2,11 @@ require 'json'
 
 class PayloadProcessor
 
-  def initialize(strategies = [])
+  def initialize(*strategies)
     @strategies = strategies
   end
 
-  def run(opts) #opts = { page: , experiment: , graph_builder:  }
+  def run(opts) #opts = { page: , experiment: , builder:  }
     payload = parse(opts[:page])
     opts[:builder].build(payload, opts)
     "OK"
@@ -14,12 +14,10 @@ class PayloadProcessor
 
   def parse(page)
     raw = JSON(page)
-    { url: raw["url"], body: parse_body(raw["body"]) }
+    body = raw["body"]
+
+    @strategies.each { |s| body = s.perform(body) }
+    { url: raw["url"], body: body }
   end
 
-  def parse_body(body)
-    res = body
-    @strategies.each { |s| res = s.perform(res) }
-    res
-  end
 end

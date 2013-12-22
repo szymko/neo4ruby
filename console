@@ -1,1 +1,2 @@
+export NEO4RUBY_ENV='development'
 bundle exec pry -r './app/neo4ruby.rb'
