@@ -7,4 +7,11 @@ require_relative './mock'
 
 module TestHelper
   class ProcesorPszemka; end
+
+  def assert_changed_by(numbr)
+    current = Expression.count
+    yield
+
+    assert numbr, (current - Expression.count).abs
+  end
 end

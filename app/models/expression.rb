@@ -4,6 +4,7 @@ class Expression
 
   include Neo4j::NodeMixin
   include Shared::Neo4jTransaction
+  include Shared::ModelUtility
 
   rule(:all)
 
@@ -35,8 +36,7 @@ class Expression
   end
 
   def find_or_create_outgoing(expr)
-    (rels.find{ |s| s.end_node.word == expr.word && s.is_a?(Sequence) } ||
-    create_sequence(expr, dir: :outgoing))
+    sequence_to(expr) || create_sequence(expr, dir: :outgoing)
   end
 
   def create_sequence(expr, opts = {})
@@ -63,26 +63,16 @@ class Expression
     self.rels(:outgoing, :sequence).to_a
   end
 
+  def sequence_to(expr)
+    rels.find { |s| s.end_node.word == expr.word && s.is_a?(Sequence) }
+  end
+
   ## class methods
 
   # decorators for finding and creating expressions
 
   def self.transaction_create(attrs = {})
     transaction { Expression.create(attrs) }
-  end
-
-  def self.destroy_all
-    all.each do |el|
-      transaction { el.del }
-    end
-  end
-
-  def self.find_or_create(attrs)
-    Expression.find(attrs).first || transaction_create(attrs)
-  end
-
-  def self.count
-    Expression.all.to_a.count
   end
 
   def self.from_experiment(experiment_name)

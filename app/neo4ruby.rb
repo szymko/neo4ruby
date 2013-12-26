@@ -1,4 +1,4 @@
-require_relative 'neo4ruby_connection'
+require_relative 'neo4j_connection'
 
 PROJECT_ROOT = File.join(File.dirname(File.absolute_path(__FILE__)), '/..')
 

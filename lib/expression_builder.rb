@@ -4,6 +4,7 @@ class ExpressionBuilder
     e = Expression.find_or_create(word: opts[:word],
                                   experiment: opts[:experiment])
     e.add_url(opts[:url])
+    e
   end
 
   def increment_word_count(expressions)

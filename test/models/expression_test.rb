@@ -1,11 +1,12 @@
-require_relative '../test_helper'
-require 'pry'
+require_relative '../db_test'
+require_relative '../model_helper'
 
 MiniTest::Unit.runner = DbTest::Unit.new
 
 class ExpressionTest < MiniTest::Unit::TestCase
 
   include TestHelper
+  include ModelHelper
 
   def setup
     @expression1 = Expression.transaction_create(word: 'Citation', experiment: 'E1')
@@ -64,6 +65,12 @@ class ExpressionTest < MiniTest::Unit::TestCase
     assert_equal 1, @expression1.following.count
   end
 
+  def test_it_finds_sequence
+    s1 = @expression1.create_sequence(@expression2, dir: :outgoing)
+    s2 = @expression1.sequence_to(@expression2)
+    assert_equal s1.getId, s2.getId
+  end
+
   def test_it_adds_urls
     url1 = "http://www.google.pl"
     url2 = "https://www.facebook.com/Mariusz#alol"
@@ -97,10 +104,8 @@ class ExpressionTest < MiniTest::Unit::TestCase
 
   private
 
-  def assert_changed_by(numbr)
-    current = Expression.count
-    yield
-
-    assert numbr, (current - Expression.count).abs
+  def assert_changed_by(amount, &block)
+    assert_changed(model: Expression, by: amount, &block)
   end
+
 end
