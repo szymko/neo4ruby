@@ -3,11 +3,14 @@ module PayloadProcessingStrategies
   class Splitter < PayloadProcessingStrategies::BasicStrategy
 
     def initialize(opts)
+      @type = opts[:type]
+      @word_utility = opts[:word_utility]
       @rule = choose_rule(opts[:type], opts[:rule])
     end
 
     def concrete_perform(payload)
-      payload.scan(@rule).map { |s| s.is_a?(Array) ? s.first : s }.flatten
+      res = payload.scan(@rule).map { |s| s.is_a?(Array) ? s.first : s }.flatten
+      use_word_utility? ? additional_processing(res) : res
     end
 
     private
@@ -23,6 +26,21 @@ module PayloadProcessingStrategies
       else
         custom_rule
       end
+    end
+
+    def additional_processing(payload)
+      @callback = :flatten_result
+      @utility ||= WordProcessingUtility.new
+      res = @utility.delete_short_words(payload)
+      @utility.split_long_sentences(res)
+    end
+
+    def flatten_result(res)
+      res.flatten(1)
+    end
+
+    def use_word_utility?
+      (@type == :word && @word_utility)
     end
 
   end

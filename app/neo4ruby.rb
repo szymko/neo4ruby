@@ -7,5 +7,3 @@ Dir.glob(PROJECT_ROOT + "/app/concerns/**/*.rb").each { |f| require f }
 
 require_relative 'models/sequence'
 require_relative 'models/expression'
-PROCESSOR_LIST = [PayloadProcessor]
-DEFAULT_PROCESSOR = PayloadProcessor

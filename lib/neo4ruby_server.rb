@@ -4,8 +4,9 @@ class Neo4rubyServer
 
   attr_accessor :processor
 
-  def initialize(payload_processor)
-    @processor = payload_processor
+  def initialize(opts) # opts = { payload_processor:, graph_builder: }
+    @processor = opts[:payload_processor]
+    @graph_builder = opts[:graph_builder]
   end
 
   def open(opts = {})
@@ -16,14 +17,15 @@ class Neo4rubyServer
     @ch = @conn.create_channel
   end
 
-  def listen(queue_name, separator = ',')
+  def listen(queue_name, experiment_name)
     open(reopen: true) unless open?
 
     @queue = @ch.queue(queue_name)
     @exchange = @ch.default_exchange
 
     @queue.subscribe(:block => true) do |delivery_info, properties, payload|
-      r = processor.run(payload)
+      r = processor.run(page: payload, builder: @graph_builder,
+                        experiment: experiment_name)
 
       @exchange.publish(r.to_s, :routing_key => properties.reply_to, :correlation_id => properties.correlation_id)
     end

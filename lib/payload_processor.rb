@@ -2,13 +2,16 @@ require 'json'
 
 class PayloadProcessor
 
-  def initialize(*strategies)
+  def initialize(strategies)
     @strategies = strategies
   end
 
   def run(opts) #opts = { page: , experiment: , builder:  }
     payload = parse(opts[:page])
+
+Neo4j::Transaction.run do
     opts[:builder].build(payload, opts)
+end
     "OK"
   end
 

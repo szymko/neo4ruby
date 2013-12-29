@@ -6,7 +6,8 @@ class Neo4rubyServerTest < MiniTest::Unit::TestCase
 
   def setup
     @processor = mock()
-    @s = Neo4rubyServer.new(@processor)
+    @builder = mock()
+    @s = Neo4rubyServer.new(payload_processor: @processor, graph_builder: @builder)
 
     setup_bunny()
   end
@@ -26,6 +27,10 @@ class Neo4rubyServerTest < MiniTest::Unit::TestCase
 
   def test_it_shuts_down
     @s.open()
+    # below hack to prevent NotYetConnectedException
+    until @s.open?
+      sleep 0.01
+    end
     @s.shutdown()
     refute @s.open?
   end

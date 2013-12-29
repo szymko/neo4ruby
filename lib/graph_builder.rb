@@ -5,10 +5,10 @@ class GraphBuilder
     @assoc_engine = opts[:assoc_engine]
   end
 
-  def build(payload, opts)
+  def build(payload, opts) #payload = { url:, body: }, opts = { experiment:, sequence_size: }
     sequence_size = opts[:sequence_size] || 1
 
-    payload[:body].each_cons(sequence_size) do |sequence|
+    payload[:body].each_slice(sequence_size) do |sequence|
       graph_part = build_graph(sequence, url: payload[:url],
                                 experiment: opts[:experiment])
 

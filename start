@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+require_relative './app/neo4ruby'
+
+trap("INT"){ exit() }
+
+begin
+  strategies = [PayloadProcessingStrategies::WikiSpecialsCleaner.new,
+                PayloadProcessingStrategies::Splitter.new(type: :sentence),
+                PayloadProcessingStrategies::Splitter.new(type: :word, word_utility: true),
+                PayloadProcessingStrategies::Normalizer.new]
+  processor = PayloadProcessor.new(strategies)
+  builder = GraphBuilder.new(expression_builder: ExpressionBuilder.new, assoc_engine: AssocEngine.new)
+
+  manager = ServerManager.new(payload_processor: processor, graph_builder: builder)
+  manager.parse_command_line()
+  manager.run()
+
+rescue Exception => e
+
+  unless e.is_a? SystemExit
+    puts "#{e.message}: #{e.inspect}"
+    puts e.backtrace
+  end
+
+ensure
+  manager ||= nil
+  manager.stop() if manager
+end

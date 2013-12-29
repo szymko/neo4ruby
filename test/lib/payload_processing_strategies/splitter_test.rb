@@ -29,4 +29,11 @@ class PayloadProcessingStrategies::SplitterTest < MiniTest::Unit::TestCase
 
     assert_equal(['111', '2222'], s.perform(payload))
   end
+
+  def test_it_uses_word_processing_utility
+    s = PayloadProcessingStrategies::Splitter.new(type: :word, word_utility: true)
+    payload = ["a1 a2 a3 a4 a5 a6 a7 a8 a9 a s", "a1 a2"]
+    assert_equal [["a1", "a2", "a3", "a4", "a5", "a6", "a7"], ["a8", "a9"], ["a1", "a2"]], s.perform(payload)
+  end
+
 end

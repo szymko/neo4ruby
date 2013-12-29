@@ -4,19 +4,21 @@ require 'optparse'
 class ServerManager
 
   DEFAULT_QUEUE = "neo4ruby"
+  DEFAULT_EXPERIMENT = "search_engine"
 
   # TODO Rewrite puts for logger!
 
-  attr_reader :options, :processor, :server
+  attr_reader :options, :processor, :server, :experiment
 
   AVAILABLE_OPTIONS = [
     OptionEntry.new(:queue, ["-q", "--queue NAME", "Set queue name"]),
-    OptionEntry.new(:processor, ["-p", "--processor PAYLOAD_PROCESSOR", "Choose payload processor"]),
-    OptionEntry.new(:list, ["-l", "--list_processors", "List available payload processors"]),
+    OptionEntry.new(:experiment, ["-e", "--experiment NAME", "Set experiment name"]),
     OptionEntry.new(:silent, ["-s", "--silent", "Suppress output"])
   ].to_set
 
-  def initialize
+  def initialize(opts) #opts = { payload_processor:, graph_builder:}
+    @processor = opts[:payload_processor]
+    @graph_builder = opts[:graph_builder]
     @options = {}
   end
 
@@ -32,41 +34,19 @@ class ServerManager
   end
 
   def run
-    if @options[:list]
-      present_processor_list()
-    else
-      select_payload_processor()
-      start_server()
-    end
-  end
+    @queue = @options[:queue] || DEFAULT_QUEUE
+    @experiment = @options[:experiment] || DEFAULT_EXPERIMENT
 
-  def present_processor_list
-    puts "Available payload processors:\n#{PROCESSOR_LIST.join("\n")}"
-  end
-
-  def select_payload_processor
-    if @options[:processor]
-      requested_processor = (PROCESSOR_LIST.find { |p| p.to_s == @options[:processor] }) || DEFAULT_PROCESSOR
-      puts "Using default processor." if (requested_processor == DEFAULT_PROCESSOR) && !@options[:silent]
-
-      @processor = requested_processor.new
-    else
-      @processor = DEFAULT_PROCESSOR.new
-    end
-  end
-
-  def start_server
-    @server = Neo4rubyServer.new(@processor)
+    @server = Neo4rubyServer.new(payload_processor: @processor, graph_builder: @graph_builder)
     @server.open
-    @queue = options[:queue] || DEFAULT_QUEUE
 
-    puts "Listening for queue: #{@queue}..." unless @options[:silent]
-    @server.listen(@queue)
+    puts "Listening for: queue #{@queue}, experiment: #{@experiment}..." unless @options[:silent]
+    @server.listen(@queue, @experiment)
   end
 
   def stop
     if @server && @server.open?
-      puts "Shutting down the server for: #{@queue}." unless @options[:silent]
+      puts "Shutting down the server for: queue #{@queue}, experiment: #{@experiment}." unless @options[:silent]
       @server.shutdown
     end
   end

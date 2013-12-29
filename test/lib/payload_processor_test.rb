@@ -7,7 +7,7 @@ class PayloadProcessorTest < MiniTest::Unit::TestCase
     payload = { url: "http://www.example.com", body: "Bonjour, \t ca va?" }
     s1, s2 = mock(), mock()
     setup_strategies(s1, s2, payload[:body])
-    p = PayloadProcessor.new(s1, s2)
+    p = PayloadProcessor.new([s1, s2])
 
     assert_equal( payload, p.parse(payload.to_json))
   end
@@ -19,7 +19,7 @@ class PayloadProcessorTest < MiniTest::Unit::TestCase
     s1 = setup_strategies(mock, payload[:body]).first
 
     builder.expects(:build).with(payload, opts)
-    p = PayloadProcessor.new(s1)
+    p = PayloadProcessor.new([s1])
     assert_equal("OK", p.run(opts))
   end
 
