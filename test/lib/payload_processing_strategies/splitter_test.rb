@@ -32,8 +32,10 @@ class PayloadProcessingStrategies::SplitterTest < MiniTest::Unit::TestCase
 
   def test_it_uses_word_processing_utility
     s = PayloadProcessingStrategies::Splitter.new(type: :word, word_utility: true)
+    Neo4RubyConfig[:payload][:max_sentence_length] = 4
+    Neo4RubyConfig[:payload][:min_word_length] = 2
     payload = ["a1 a2 a3 a4 a5 a6 a7 a8 a9 a s", "a1 a2"]
-    assert_equal [["a1", "a2", "a3", "a4", "a5", "a6", "a7"], ["a8", "a9"], ["a1", "a2"]], s.perform(payload)
+    assert_equal [["a1", "a2", "a3", "a4"], ["a5", "a6", "a7", "a8"], ["a9"], ["a1", "a2"]], s.perform(payload)
   end
 
 end

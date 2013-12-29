@@ -8,19 +8,28 @@ class PayloadProcessor
 
   def run(opts) #opts = { page: , experiment: , builder:  }
     payload = parse(opts[:page])
-
-Neo4j::Transaction.run do
-    opts[:builder].build(payload, opts)
-end
+    Neo4j::Transaction.run { opts[:builder].build(payload, opts) }
     "OK"
   end
 
   def parse(page)
-    raw = JSON(page)
-    body = raw["body"]
+    raw = HashUtility.symbolize_keys(JSON(page))
+    body = process_body(raw[:body])
 
-    @strategies.each { |s| body = s.perform(body) }
-    { url: raw["url"], body: body }
+    { url: raw[:url], body: body }
+  end
+
+  private
+
+  def process_body(body)
+    if body.kind_of? Hash
+      res = {}
+      body.each_pair { |k, v| res[k] = @strategies.reduce(v) { |r, s| r = s.perform(r) } }
+    else
+      @strategies.each { |s| res = s.perform(body) }
+    end
+
+    res
   end
 
 end

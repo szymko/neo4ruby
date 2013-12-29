@@ -9,7 +9,8 @@ begin
                 PayloadProcessingStrategies::Splitter.new(type: :word, word_utility: true),
                 PayloadProcessingStrategies::Normalizer.new]
   processor = PayloadProcessor.new(strategies)
-  builder = GraphBuilder.new(expression_builder: ExpressionBuilder.new, assoc_engine: AssocEngine.new)
+  converter = PayloadConvertingStrategies::ObligatoryOptionalConverter.new
+  builder = Builders::GraphBuilder.new(expression_builder: Builders::ExpressionBuilder.new, assoc_engine: AssocEngine.new, payload_converter: converter)
 
   manager = ServerManager.new(payload_processor: processor, graph_builder: builder)
   manager.parse_command_line()

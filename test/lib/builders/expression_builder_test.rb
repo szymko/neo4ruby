@@ -1,9 +1,9 @@
-require_relative '../db_test'
-require_relative '../model_helper'
+require_relative '../../db_test'
+require_relative '../../model_helper'
 
 MiniTest::Unit.runner = DbTest::Unit.new
 
-class ExpressionBuilderTest < MiniTest::Unit::TestCase
+class Builders::ExpressionBuilderTest < MiniTest::Unit::TestCase
 
   include ModelHelper
 
@@ -12,7 +12,7 @@ class ExpressionBuilderTest < MiniTest::Unit::TestCase
                      experiment: 'Dexters Lab, here I come!',
                      word: 'e1'
                    }
-    @expr_builder = ExpressionBuilder.new
+    @expr_builder = Builders::ExpressionBuilder.new
   end
 
   def teardown

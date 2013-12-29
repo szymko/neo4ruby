@@ -9,7 +9,7 @@ class PayloadProcessorTest < MiniTest::Unit::TestCase
     setup_strategies(s1, s2, payload[:body])
     p = PayloadProcessor.new([s1, s2])
 
-    assert_equal( payload, p.parse(payload.to_json))
+    assert_equal payload, p.parse(payload.to_json)
   end
 
   def test_it_parses_page
@@ -21,6 +21,16 @@ class PayloadProcessorTest < MiniTest::Unit::TestCase
     builder.expects(:build).with(payload, opts)
     p = PayloadProcessor.new([s1])
     assert_equal("OK", p.run(opts))
+  end
+
+  def test_it_parses_payload_with_hash_in_body
+    payload  = { url: "http://www.example.com", body: { some: "a", info: "b" } }
+
+    s1 = mock()
+    s1.expects(:perform).returns("A", "B").at_least_once
+    p = PayloadProcessor.new([s1])
+    assert_equal p.parse(payload.to_json),
+                 { url: "http://www.example.com", body: { some: "A", info: "B" } }
   end
 
   def setup_strategies(*strategies, ret_val)
