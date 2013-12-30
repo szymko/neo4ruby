@@ -11,7 +11,7 @@ class Builders::GraphBuilderTest < MiniTest::Unit::TestCase
   class SimpleConverter
 
     def convert(payload)
-      payload
+      payload[:body]
     end
 
   end

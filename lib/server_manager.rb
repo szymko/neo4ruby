@@ -16,10 +16,10 @@ class ServerManager
     OptionEntry.new(:silent, ["-s", "--silent", "Suppress output"])
   ].to_set
 
-  def initialize(opts) #opts = { payload_processor:, graph_builder:}
+  def initialize(opts) #opts = { payload_processor:, graph_builder:, start_db: }
     @processor = opts[:payload_processor]
     @graph_builder = opts[:graph_builder]
-    @options = {}
+    @options = { start_db: opts[:start_db] }
   end
 
   def parse_command_line
@@ -38,6 +38,8 @@ class ServerManager
     @experiment = @options[:experiment] || DEFAULT_EXPERIMENT
 
     @server = Neo4rubyServer.new(payload_processor: @processor, graph_builder: @graph_builder)
+
+    start_db(@experiment) if @options[:start_db]
     @server.open
 
     puts "Listening for: queue #{@queue}, experiment: #{@experiment}..." unless @options[:silent]
@@ -49,5 +51,12 @@ class ServerManager
       puts "Shutting down the server for: queue #{@queue}, experiment: #{@experiment}." unless @options[:silent]
       @server.shutdown
     end
+  end
+
+  private
+
+  def start_db(experiment)
+    path = "db/#{experiment}"
+    Neo4jConnection.change_db_path(path)
   end
 end

@@ -1,2 +1,13 @@
+#!/bin/bash
+VERBOSE=
+while getopts “e:” OPTION
+do
+  case $OPTION in
+    e)
+      export EXPERIMENT=$OPTARG
+             ;;
+  esac
+done
+
 export NEO4RUBY_ENV='development'
 bundle exec pry -r './app/neo4ruby.rb'

@@ -1,9 +1,8 @@
 module Builders
   class ExpressionBuilder
 
-    def build(opts) # opts = { word: , url: , experiment: }
-      e = Expression.find_or_create(word: opts[:word],
-                                    experiment: opts[:experiment])
+    def build(opts) # opts = { word: , url: }
+      e = Expression.find_or_create(word: opts[:word])
       e.add_url(opts[:url])
       e
     end

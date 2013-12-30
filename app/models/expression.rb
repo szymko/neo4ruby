@@ -52,11 +52,12 @@ class Expression
 
   def add_url(url)
     urls = self.urls || []
-    urls = (urls << url).uniq
+    modified_urls = urls.dup
+    (urls << url).uniq
 
     raise ArgumentError unless url =~ /^#{URI::regexp}$/
 
-    set_prop(:urls, urls.uniq) unless urls == self.urls
+    set_prop(:urls, urls.uniq) unless urls == modified_urls
   end
 
   def sequences

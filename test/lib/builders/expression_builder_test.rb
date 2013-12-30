@@ -10,8 +10,7 @@ class Builders::ExpressionBuilderTest < MiniTest::Unit::TestCase
   def setup
     @expr_params = { url: 'http://en.wikipedia.org/',
                      experiment: 'Dexters Lab, here I come!',
-                     word: 'e1'
-                   }
+                     word: 'e1' }
     @expr_builder = Builders::ExpressionBuilder.new
   end
 

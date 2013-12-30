@@ -12,7 +12,7 @@ begin
   converter = PayloadConvertingStrategies::ObligatoryOptionalConverter.new
   builder = Builders::GraphBuilder.new(expression_builder: Builders::ExpressionBuilder.new, assoc_engine: AssocEngine.new, payload_converter: converter)
 
-  manager = ServerManager.new(payload_processor: processor, graph_builder: builder)
+  manager = ServerManager.new(payload_processor: processor, graph_builder: builder, start_db: true)
   manager.parse_command_line()
   manager.run()
 
