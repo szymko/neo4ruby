@@ -3,3 +3,7 @@ payload:
   min_word_length: 2
   max_word_length: 25
   max_sentence_length: 4
+
+logger:
+  enabled: true
+  file: 'log/neo4ruby.log'
