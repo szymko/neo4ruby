@@ -19,6 +19,7 @@ begin
 rescue Exception => e
 
   unless e.is_a? SystemExit
+    Neo4rubyLogger.log_exception(e)
     puts "#{e.message}: #{e.inspect}"
     puts e.backtrace
   end

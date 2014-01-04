@@ -7,13 +7,17 @@ module Builders
       @payload_converter = opts[:payload_converter]
     end
 
-    def build(payload, opts) #payload = { url:, body: { obligatory:, optional: } }, opts = { sequence_size: }
+    def build(payload, opts) #payload = { url:, body: },  opts = { sequence_size: }
       sequence_size = opts[:sequence_size] || 1
       data = @payload_converter.convert(payload)
-      data.each_slice(sequence_size) do |sequence|
-        graph_part = build_graph(sequence, url: payload[:url])
-        @expression_builder.increment_word_count(graph_part)
-        @assoc_engine.bind_nodes(graph_part, @expression_builder)
+
+      Neo4rubyLogger.log(level: :debug, msg: "Data size: #{data.length}")
+      Neo4j::Transaction.run do
+        data.each_slice(sequence_size) do |sequence|
+          graph_part = build_graph(sequence, url: payload[:url])
+          @expression_builder.increment_word_count(graph_part)
+          @assoc_engine.bind_nodes(graph_part, @expression_builder)
+        end
       end
     end
 

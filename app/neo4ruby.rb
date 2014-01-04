@@ -8,4 +8,4 @@ Dir.glob(PROJECT_ROOT + "/app/concerns/**/*.rb").each { |f| require f }
 require_relative 'models/sequence'
 require_relative 'models/expression'
 
-Neo4RubyConfig = HashUtility.symbolize_keys(YAML.load_file(PROJECT_ROOT + "/config/config.yml"))
+Neo4rubyConfig = HashUtility.symbolize_keys(YAML.load_file(PROJECT_ROOT + "/config/config.yml"))

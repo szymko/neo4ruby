@@ -6,9 +6,9 @@ class PayloadProcessor
     @strategies = strategies
   end
 
-  def run(opts) #opts = { page: , experiment: , builder:  }
+  def run(opts) #opts = { page: , builder:  }
     payload = parse(opts[:page])
-    Neo4j::Transaction.run { opts[:builder].build(payload, opts) }
+    opts[:builder].build(payload, opts)
     "OK"
   end
 

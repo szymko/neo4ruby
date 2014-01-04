@@ -5,6 +5,8 @@ require_relative '../app/neo4ruby'
 require_relative '../lib/server_manager'
 require_relative './mock'
 
+Neo4rubyConfig[:logger][:enabled] = false
+
 module TestHelper
 
   def assert_changed_by(numbr)

@@ -7,7 +7,7 @@ module PayloadConvertingStrategies
         payload[:body]
       else
         payload[:body][:obligatory] +
-        payload[:body][:optional].first(Neo4RubyConfig[:payload][:optional_limit])
+        payload[:body][:optional].first(Neo4rubyConfig[:payload][:optional_limit])
       end
     end
 

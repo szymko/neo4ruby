@@ -17,16 +17,17 @@ class Neo4rubyServer
     @ch = @conn.create_channel
   end
 
-  def listen(queue_name, experiment_name)
+  def listen(queue_name)
     open(reopen: true) unless open?
 
     @queue = @ch.queue(queue_name)
     @exchange = @ch.default_exchange
 
     @queue.subscribe(:block => true) do |delivery_info, properties, payload|
-      r = @processor.run(page: payload, builder: @graph_builder,
-                         experiment: experiment_name)
-puts "Inserted page"
+      Neo4rubyLogger.log(level: :debug, msg: "Received: page #{payload[0..50]}...")
+      r = @processor.run(page: payload, builder: @graph_builder)
+
+      Neo4rubyLogger.log(level: :debug, msg: "Inserted: page #{payload[0..50]}...")
       @exchange.publish(r.to_s, :routing_key => properties.reply_to, :correlation_id => properties.correlation_id)
     end
   end

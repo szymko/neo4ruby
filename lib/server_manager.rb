@@ -42,13 +42,13 @@ class ServerManager
     start_db(@experiment) if @options[:start_db]
     @server.open
 
-    puts "Listening for: queue #{@queue}, experiment: #{@experiment}..." unless @options[:silent]
-    @server.listen(@queue, @experiment)
+    Neo4rubyLogger.log(level: :info, msg: start_msg) unless @options[:silent]
+    @server.listen(@queue)
   end
 
   def stop
     if @server && @server.open?
-      puts "Shutting down the server for: queue #{@queue}, experiment: #{@experiment}." unless @options[:silent]
+      Neo4rubyLogger.log(level: :info, msg: stop_msg) unless @options[:silent]
       @server.shutdown
     end
   end
@@ -58,5 +58,13 @@ class ServerManager
   def start_db(experiment)
     path = "db/#{experiment}"
     Neo4jConnection.change_db_path(path)
+  end
+
+  def start_msg
+    "Listening for: queue #{@queue}, experiment: #{@experiment}..."
+  end
+
+  def stop_msg
+    "Shutting down the server for: queue #{@queue}, experiment: #{@experiment}."
   end
 end

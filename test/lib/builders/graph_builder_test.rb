@@ -55,7 +55,7 @@ class Builders::GraphBuilderTest < MiniTest::Unit::TestCase
     gb.build(payload, opts)
 
     e = []
-    10.times { |t| e << Expression.find_one(word: "e#{t+1}") }
+    9.times { |t| e << Expression.find_one(word: "e#{t+1}") }
     delta = 0.01
 
     assert_in_delta 1.00, e[0].sequence_to(e[1]).weight, delta

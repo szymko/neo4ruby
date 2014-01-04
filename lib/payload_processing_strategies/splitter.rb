@@ -31,8 +31,8 @@ module PayloadProcessingStrategies
     def additional_processing(payload)
       @callback = :flatten_result
       @utility ||= WordProcessingUtility.new
-      res = @utility.delete_short_words(payload, Neo4RubyConfig[:payload][:min_word_length])
-      @utility.split_long_sentences(res, Neo4RubyConfig[:payload][:max_sentence_length])
+      res = @utility.delete_short_words(payload, Neo4rubyConfig[:payload][:min_word_length])
+      @utility.split_long_sentences(res, Neo4rubyConfig[:payload][:max_sentence_length])
     end
 
     def flatten_result(res)

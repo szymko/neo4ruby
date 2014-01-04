@@ -28,10 +28,9 @@ class ServerManagerTest < MiniTest::Unit::TestCase
     end
   end
 
-  def mock_run(queue = ServerManager::DEFAULT_QUEUE,
-               experiment = ServerManager::DEFAULT_EXPERIMENT)
+  def mock_run(queue = ServerManager::DEFAULT_QUEUE)
     @server.expects(:open)
-    @server.expects(:listen).with(queue, experiment)
+    @server.expects(:listen).with(queue)
     @server_manager.run()
   end
 end
