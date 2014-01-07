@@ -13,7 +13,6 @@ class ServerManager
   AVAILABLE_OPTIONS = [
     OptionEntry.new(:queue, ["-q", "--queue NAME", "Set queue name"]),
     OptionEntry.new(:experiment, ["-e", "--experiment NAME", "Set experiment name"]),
-    OptionEntry.new(:silent, ["-s", "--silent", "Suppress output"])
   ].to_set
 
   def initialize(opts) #opts = { payload_processor:, graph_builder:, start_db: }
@@ -40,15 +39,16 @@ class ServerManager
     @server = Neo4rubyServer.new(payload_processor: @processor, graph_builder: @graph_builder)
 
     start_db(@experiment) if @options[:start_db]
+    start_redis(@experiment)
     @server.open
 
-    Neo4rubyLogger.log(level: :info, msg: start_msg) unless @options[:silent]
+    Neo4rubyLogger.log(level: :info, msg: start_msg)
     @server.listen(@queue)
   end
 
   def stop
     if @server && @server.open?
-      Neo4rubyLogger.log(level: :info, msg: stop_msg) unless @options[:silent]
+      Neo4rubyLogger.log(level: :info, msg: stop_msg)
       @server.shutdown
     end
   end
@@ -58,6 +58,10 @@ class ServerManager
   def start_db(experiment)
     path = "db/#{experiment}"
     Neo4jConnection.change_db_path(path)
+  end
+
+  def start_redis(experiment)
+    RedisConnection.set_experiment(experiment)
   end
 
   def start_msg

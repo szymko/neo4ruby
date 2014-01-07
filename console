@@ -1,5 +1,4 @@
 #!/bin/bash
-VERBOSE=
 while getopts “e:” OPTION
 do
   case $OPTION in

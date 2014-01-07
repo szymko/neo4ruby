@@ -1,3 +1,5 @@
+require_relative './proxies/redis_proxy'
+require_relative 'redis_connection'
 require_relative 'neo4j_connection'
 
 PROJECT_ROOT = File.join(File.dirname(File.absolute_path(__FILE__)), '/..')

@@ -9,7 +9,7 @@ class PayloadProcessor
   def run(opts) #opts = { page: , builder:  }
     payload = parse(opts[:page])
     opts[:builder].build(payload, opts)
-    "OK"
+    true
   end
 
   def parse(page)

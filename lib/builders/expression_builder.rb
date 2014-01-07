@@ -1,15 +1,17 @@
 module Builders
   class ExpressionBuilder
 
-    def initialize
-      @expr_cache = []
+    def initialize(opts = {})
+      @expressions = ExpressionCollection.new
+      @update_cache = opts[:update_cache]
     end
 
     def build(opts) # opts = { word: , url: }
-      e = (Expression.find_one(word: opts[:word]) || @expr_cache.find { |e| e.word == opts[:word] })
+      @expressions.refresh_cache if @update_cache
+      #e = (Expression.find_one(word: opts[:word]) || expr_cache[opts[:word]] )
+      e = @expressions.find(opts[:word])
       unless e
-        e = Expression.transaction_create(word: opts[:word])
-        @expr_cache << e
+        e = @expressions.create(word: opts[:word])
       end
 
       e.add_url(opts[:url])
@@ -24,8 +26,14 @@ module Builders
       expr1.find_or_create_outgoing(expr2)
     end
 
-    def clear_expr_cache
-      @expr_cache = []
+    private
+
+    def build_cache
+      Expression.all.to_a.reduce({}) do |h, e|
+        h[e.word] = e
+        e.load_outgoing
+        h
+      end
     end
 
   end

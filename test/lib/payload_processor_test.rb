@@ -20,7 +20,7 @@ class PayloadProcessorTest < MiniTest::Unit::TestCase
 
     builder.expects(:build).with(payload, opts)
     p = PayloadProcessor.new([s1])
-    assert_equal("OK", p.run(opts))
+    assert_equal(true, p.run(opts))
   end
 
   def test_it_parses_payload_with_hash_in_body

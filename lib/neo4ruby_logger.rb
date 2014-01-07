@@ -3,6 +3,7 @@ require 'singleton'
 require 'fileutils'
 
 class Neo4rubyLogger
+
   include Singleton
 
   def log(options)
@@ -12,7 +13,7 @@ class Neo4rubyLogger
   end
 
   def self.log(*args)
-    self.instance.log(*args) if Neo4rubyConfig[:logger][:enabled]
+    instance.log(*args) if Neo4rubyConfig[:logger][:enabled]
   end
 
   def self.log_exception(exc)

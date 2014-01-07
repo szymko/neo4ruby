@@ -1,3 +1,5 @@
+require 'jruby/profiler'
+
 module Builders
   class GraphBuilder
 
@@ -11,7 +13,9 @@ module Builders
       sequence_size = opts[:sequence_size] || 1
       data = @payload_converter.convert(payload)
 
-      Neo4rubyLogger.log(level: :debug, msg: "Data size: #{data.length}")
+      Neo4rubyLogger.log(level: :debug, msg: "Sentence count: #{data.length}")
+      Neo4rubyLogger.log(level: :debug, msg: "Word count: #{data.flatten.length}")
+
       Neo4j::Transaction.run do
         data.each_slice(sequence_size) do |sequence|
           graph_part = build_graph(sequence, url: payload[:url])

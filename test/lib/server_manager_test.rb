@@ -5,7 +5,6 @@ class ServerManagerTest < MiniTest::Unit::TestCase
   def setup
     @server_manager = ServerManager.new(payload_processor: mock(),
                                         graph_builder: mock())
-    @server_manager.options[:silent] = true
     @server = mock()
     Neo4rubyServer.stubs(:new).returns(@server)
   end

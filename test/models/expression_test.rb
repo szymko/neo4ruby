@@ -21,11 +21,11 @@ class ExpressionTest < MiniTest::Unit::TestCase
     assert_changed_by(1) { Expression.transaction_create(word: 'Mariusz') }
   end
 
-  def test_it_finds_existing_expression
-    assert_changed_by(1) do
-      2.times { Expression.find_or_create(word: 'Pszemek') }
-    end
-  end
+  # def test_it_finds_existing_expression
+  #   assert_changed_by(1) do
+  #     2.times { Expression.find_or_create(word: 'Pszemek') }
+  #   end
+  # end
 
   def test_it_destroys_all
     assert_changed_by(Expression.count) { Expression.destroy_all }
@@ -59,11 +59,11 @@ class ExpressionTest < MiniTest::Unit::TestCase
     assert_equal @expression1.outgoing(:sequence).to_a, @expression1.following
   end
 
-  def test_it_finds_linked_expression
-    @expression1.create_sequence(@expression2, dir: :outgoing)
-    @expression1.find_or_create_outgoing(@expression2)
-    assert_equal 1, @expression1.following.count
-  end
+  # def test_it_finds_linked_expression
+  #   @expression1.create_sequence(@expression2, dir: :outgoing)
+  #   @expression1.find_or_create_outgoing(@expression2)
+  #   assert_equal 1, @expression1.following.count
+  # end
 
   def test_it_finds_sequence
     s1 = @expression1.create_sequence(@expression2, dir: :outgoing)
@@ -94,13 +94,13 @@ class ExpressionTest < MiniTest::Unit::TestCase
     assert_equal 1, @expression1.urls.count
   end
 
-  def test_it_returns_expressions_from_given_experiment
-    Expression.transaction_create(word: 'badly', experiment: 'E1')
+  # def test_it_returns_expressions_from_given_experiment
+  #   Expression.transaction_create(word: 'badly', experiment: 'E1')
 
-    assert_equal 2, Expression.from_experiment('E1').length
-    assert_equal 1, Expression.from_experiment('E2').length
-    assert_equal 0, Expression.from_experiment('E3').length
-  end
+  #   assert_equal 2, Expression.from_experiment('E1').length
+  #   assert_equal 1, Expression.from_experiment('E2').length
+  #   assert_equal 0, Expression.from_experiment('E3').length
+  # end
 
   private
 

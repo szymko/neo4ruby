@@ -11,7 +11,7 @@ class Builders::ExpressionBuilderTest < MiniTest::Unit::TestCase
     @expr_params = { url: 'http://en.wikipedia.org/',
                      experiment: 'Dexters Lab, here I come!',
                      word: 'e1' }
-    @expr_builder = Builders::ExpressionBuilder.new
+    @expr_builder = Builders::ExpressionBuilder.new(update_cache: true)
   end
 
   def teardown
@@ -50,6 +50,6 @@ class Builders::ExpressionBuilderTest < MiniTest::Unit::TestCase
     expr2 = Expression.transaction_create(@expr_params.merge(word: 'e2'))
 
     @expr_builder.increment_word_count([expr1, expr2])
-    assert_equal 1, expr1.count
+    assert_equal 1, expr1.count.to_f
   end
 end

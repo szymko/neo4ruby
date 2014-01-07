@@ -25,10 +25,11 @@ class Neo4rubyServer
 
     @queue.subscribe(:block => true) do |delivery_info, properties, payload|
       Neo4rubyLogger.log(level: :debug, msg: "Received: page #{payload[0..50]}...")
-      r = @processor.run(page: payload, builder: @graph_builder)
 
+      r = @processor.run(page: payload, builder: @graph_builder)
       Neo4rubyLogger.log(level: :debug, msg: "Inserted: page #{payload[0..50]}...")
-      @exchange.publish(r.to_s, :routing_key => properties.reply_to, :correlation_id => properties.correlation_id)
+      @exchange.publish(r.to_s, :routing_key => properties.reply_to,
+                        :correlation_id => properties.correlation_id)
     end
   end
 
