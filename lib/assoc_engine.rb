@@ -9,7 +9,7 @@ class AssocEngine
         update_weight(e1, changed.last)
       end
 
-      (e1.sequence_cache - changed).each { |s| update_weight(e1, s) }
+      (e1.sequences - changed).each { |s| update_weight(e1, s) }
     end
   end
 

@@ -24,7 +24,7 @@ class RedisConnection
 
   def new_connection(opts)
     opts = Neo4rubyConfig[:redis].merge(opts)
-    RedisProxy.new(opts, @experiment_prefix)
+    @redis ||= RedisProxy.new(opts, @experiment_prefix)
   end
 
 end

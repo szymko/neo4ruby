@@ -1,5 +1,3 @@
-require 'jruby/profiler'
-
 module Builders
   class GraphBuilder
 
@@ -24,6 +22,7 @@ module Builders
         end
       end
     end
+
 
     private
 

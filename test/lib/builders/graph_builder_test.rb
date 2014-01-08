@@ -1,6 +1,7 @@
 require_relative '../../test_helper'
+require_relative '../../test_db'
 
-MiniTest::Unit.runner = DbTest::Unit.new
+MiniTest::Unit.runner = TestDb::Unit.new
 
 class Builders::GraphBuilderTest < MiniTest::Unit::TestCase
 
@@ -25,21 +26,21 @@ class Builders::GraphBuilderTest < MiniTest::Unit::TestCase
     engine.expects(:bind_nodes).times(4)
 
     converter = mock
-    converter.expects(:convert).times(1).returns(['a', 'b', 'c', 'd'])
+    converter.expects(:convert).times(1).returns(["a", "b", "c", "d"])
 
-    payload = { url: 'http://www.example.com/', body: ['a', 'b', 'c', 'd'] }
+    payload = { url: "http://www.example.com/", body: ["a", "b", "c", "d"] }
 
     gb = Builders::GraphBuilder.new(expression_builder: builder,
                                     assoc_engine: engine,
                                     payload_converter: converter)
-    gb.build(payload, experiment: 'e1')
+    gb.build(payload, experiment: "e1")
 
   end
 
   # complex integration test based on
   # "Sztuczne systemy skojarzeniowe i asocjacyjna sztuczna inteligencja", page 232
   def test_on_example_from_book
-    Expression.delete_all
+    ExpressionProxy.delete_all
     engine = AssocEngine.new
     expr_builder = Builders::ExpressionBuilder.new
     converter = SimpleConverter.new
@@ -54,14 +55,17 @@ class Builders::GraphBuilderTest < MiniTest::Unit::TestCase
                                     payload_converter: converter)
     gb.build(payload, opts)
 
-    e = []
-    9.times { |t| e << Expression.find_one(word: "e#{t+1}") }
+    e = ExpressionCollection.new
     delta = 0.01
 
-    assert_in_delta 1.00, e[0].sequence_to(e[1]).weight, delta
-    assert_in_delta 0.66, e[0].sequence_to(e[2]).weight, delta
-    assert_in_delta 0.66, e[1].sequence_to(e[2]).weight, delta
-    assert_in_delta 0.40, e[1].sequence_to(e[5]).weight, delta
-    assert_in_delta 0.40, e[1].sequence_to(e[7]).weight, delta
+    assert_in_delta 1.00, weight_between(e, "e1", "e2"), delta
+    assert_in_delta 0.66, weight_between(e, "e1", "e3"), delta
+    assert_in_delta 0.66, weight_between(e, "e2", "e3"), delta
+    assert_in_delta 0.40, weight_between(e, "e2", "e6"), delta
+    assert_in_delta 0.40, weight_between(e, "e2", "e8"), delta
+  end
+
+  def weight_between(collection, word1, word2)
+    collection.find(word1).sequence_to(collection.find(word2)).weight
   end
 end

@@ -11,7 +11,7 @@ module Shared
 
       def register_props(*props)
         props.each do |prop|
-          self.class_eval <<-EVAL
+          class_eval <<-EVAL
             def #{prop}
               get_prop(:#{prop})
             end
@@ -36,7 +36,7 @@ module Shared
 
     def set_prop(prop, val)
       #transaction { send("#{prop}=", val) }
-      val = JSON("value" => val)
+      val = JSON.generate("value" => val)
       redis.hset(prefix + self.getId.to_s, prop.to_s, val)
     end
 

@@ -1,8 +1,6 @@
 require 'neo4j-wrapper'
-require 'tmpdir'
 
 module Neo4jConnection
-  TEST_DB_PATH =  File.join(Dir.tmpdir, "neo4ruby_test_db")
   DEFAULT_PATH = 'db/search_engine'
 
   def self.change_db_path(path)
@@ -17,6 +15,4 @@ module Neo4jConnection
 
 end
 
-Neo4j::Config[:storage_path] = (ENV['NEO4RUBY_ENV'] == 'test' ?
-                                Neo4jConnection::TEST_DB_PATH :
-                                Neo4jConnection.db_path)
+Neo4j::Config[:storage_path] = Neo4jConnection.db_path

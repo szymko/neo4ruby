@@ -1,47 +1,72 @@
-require 'delegate'
-
-class ExpressionProxy < SimpleDelegator
+class ExpressionProxy < ModelProxy
 
   include Shared::Properties
 
   register_props :word, :urls, :count
 
+  delegate_to_class Expression
+
   def initialize(expr)
     @expression = expr
-    super(@expression)
     @cache = {}
+    super
+    set_cache
+  end
+
+  def load_cache
+    sequences
+    sequence_word_map
+    following
+    preceding
   end
 
   def following
-    @cache[:following] ||=
-      self.class.wrap(@expression.outgoing(:sequence).to_a)
+    present_cache(:following) do
+      ExpressionProxy.wrap(@expression.outgoing(:sequence).to_a)
+    end
   end
 
   def preceding
-    @cache[:preceding] ||=
-      self.class.wrap(@expressiong.incoming(:sequence).to_a)
+    present_cache(:preceding) do
+      ExpressionProxy.wrap(@expression.incoming(:sequence).to_a)
+    end
   end
 
   def sequences
-    @cache[:sequence] ||=
+    present_cache(:sequences) do
       SequenceProxy.wrap(@expression.sequences)
+    end
   end
 
   def sequence_word_map
-    @cache[:sequence_word_map] ||= sequences.reduce({}) do |c, seq|
-      c[seq.end_node.word] = seq
-      c
+    present_cache(:sequence_word_map) do
+      sequences.reduce({}) do |c, seq|
+        c[seq.end_node.word] = seq
+        c
+      end
     end
+  end
+
+  def add_to_cache(key)
+    @cache[key][:loaded] ? yield(send(key)) : send(key)
+  end
+
+  def set_cache
+    @cache[:sequences] = { loaded: false,  }
+    @cache[:sequence_word_map] = { loaded: false }
+    @cache[:preceding] = { loaded: false }
+    @cache[:following] = { loaded: false }
   end
 
   def clear_cache
     @cache = {}
+    set_cache
   end
 
   def add_to_outgoing(s)
-    sequences << s
-    sequence_word_map[s.end_node.word] = s
-    following << s.end_node
+    add_to_cache(:sequences) { |seq| seq << s }
+    add_to_cache(:sequence_word_map) { |swm| swm[s.end_node.word] = s }
+    add_to_cache(:following) { |fol| fol << s.end_node }
   end
 
   def add_url(url)
@@ -55,7 +80,7 @@ class ExpressionProxy < SimpleDelegator
   end
 
   def create_sequence(*args)
-    s = SequenceProxy.new(@expression.create_sequence(args))
+    s = SequenceProxy.new(@expression.create_sequence(*args))
     add_to_outgoing(s)
     s
   end
@@ -78,11 +103,18 @@ class ExpressionProxy < SimpleDelegator
   end
 
   def self.all
-    Expression.all.to_a
+    wrap(Expression.all.to_a)
   end
 
-  def self.wrap(collection)
-    collection.map { |e| ExpressionProxy.new(e) }
+  private
+
+  def present_cache(key)
+    if @cache[key][:loaded]
+      @cache[key][:value]
+    else
+      @cache[key][:loaded] = true
+      @cache[key][:value] = yield
+    end
   end
 
 end
