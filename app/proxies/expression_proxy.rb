@@ -2,7 +2,8 @@ class ExpressionProxy < ModelProxy
 
   include Shared::Properties
 
-  register_props :word, :urls, :count
+  register_cached_properties :urls, :count
+  register_properties :word
 
   delegate_to_class Expression
 
@@ -98,7 +99,14 @@ class ExpressionProxy < ModelProxy
   def self.create(attrs)
     e = Expression.transaction_create()
     e_proxy = self.new(e)
-    attrs.each_pair { |atr, val| e_proxy.set_prop(atr, val)  }
+    attrs.each_pair do |atr, val|
+      if (atr == :word) || (atr == :count)
+        e_proxy.set_property(atr, val)
+      else
+        [val].flatten.each { |u| e_proxy.add_url(u) }
+      end
+    end
+
     e_proxy
   end
 

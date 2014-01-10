@@ -21,8 +21,12 @@ module Builders
           @assoc_engine.bind_nodes(graph_part, @expression_builder)
         end
       end
+
     end
 
+    def save_graph
+      @expression_builder.save_properties
+    end
 
     private
 

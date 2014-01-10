@@ -9,18 +9,48 @@ module Shared
 
     module ClassMethods
 
-      def register_props(*props)
+      def register_cached_properties(*props)
         props.each do |prop|
           class_eval <<-EVAL
             def #{prop}
-              get_prop(:#{prop})
+              @cached_#{prop} ||= load_property(:#{prop})
             end
 
-            def #{prop}=(val)
-              set_prop(:#{prop}, val)
+            def #{prop}= (val)
+              @cached_#{prop} = val
             end
           EVAL
         end
+
+        class_eval <<-EVAL
+          def cached_properties
+            #{props}
+          end
+        EVAL
+      end
+
+      def register_properties(*props)
+        props.each do |prop|
+
+          class_eval <<-EVAL
+            def #{prop}
+              @#{prop} ||= load_property(:#{prop})
+            end
+
+            def #{prop}= (val)
+              @#{prop} = val
+              save_property(:#{prop})
+              @#{prop}
+            end
+          EVAL
+
+        end
+
+        class_eval <<-EVAL
+          def properties
+            #{props}
+          end
+        EVAL
       end
 
     end
@@ -34,17 +64,28 @@ module Shared
       end
     end
 
-    def set_prop(prop, val)
-      #transaction { send("#{prop}=", val) }
-      val = JSON.generate("value" => val)
-      redis.hset(prefix + self.getId.to_s, prop.to_s, val)
+    def get_property(prop)
+      send(prop)
     end
 
-    def get_prop(prop)
+    def set_property(prop, val)
+      send("#{prop}=", val)
+    end
+
+    def load_property(prop)
       val = redis.hget(prefix + self.getId.to_s, prop.to_s)
       res = (val && val.length > 2) ?  JSON.parse(val)["value"] : val
 
       res
+    end
+
+    def save_property(p)
+      val = JSON.generate("value" => get_property(p))
+      redis.hset(prefix + self.getId.to_s, p.to_s, val)
+    end
+
+    def save_properties
+      cached_properties.each { |p| save_property(p) }
     end
 
     def redis

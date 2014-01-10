@@ -6,15 +6,15 @@ MiniTest::Unit.runner = TestDb::Unit.new
 class Builders::ExpressionBuilderTest < MiniTest::Unit::TestCase
 
   include ModelHelper
+  include TestHelper
 
   def setup
-    @expr_params = { url: 'http://en.wikipedia.org/',
-                     experiment: 'Dexters Lab, here I come!',
-                     word: 'e1' }
+    @expr_params = { word: 'e1', url: 'http://www.example.com' }
     @expr_builder = Builders::ExpressionBuilder.new(update_cache: true)
   end
 
   def teardown
+    teardown_redis(TestHelper::REDIS_TEST_PREFIX + "*")
     ExpressionProxy.destroy_all
   end
 

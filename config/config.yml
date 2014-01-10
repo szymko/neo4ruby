@@ -1,5 +1,5 @@
 payload:
-  optional_limit: 400
+  optional_limit: 2000
   min_word_length: 2
   max_word_length: 25
   max_sentence_length: 4

@@ -39,4 +39,11 @@ class ExpressionCollection
     find(word) || create(word: word)
   end
 
+  def save_properties
+    cache.values.each do |e|
+      e.save_properties
+      e.sequences.each{ |s| s.save_properties }
+    end
+  end
+
 end

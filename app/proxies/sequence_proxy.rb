@@ -2,7 +2,7 @@ class SequenceProxy < ModelProxy
 
   include Shared::Properties
 
-  register_props :delta, :weight
+  register_cached_properties :delta, :weight
 
   delegate_to_class Sequence
 
@@ -18,7 +18,7 @@ class SequenceProxy < ModelProxy
   def self.create(from_node, to_node, attrs = {})
     s = Sequence.transaction_create(from_node, to_node)
     s_proxy = self.new(s)
-    attrs.each_pair { |atr, val| s_proxy.set_prop(atr, val)  }
+    attrs.each_pair { |atr, val| s_proxy.set_property(atr, val)  }
 
     s_proxy
   end
