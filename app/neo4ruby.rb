@@ -12,5 +12,7 @@ require_relative 'models/expression'
 require_relative 'proxies/model_proxy'
 require_relative 'proxies/expression_proxy'
 require_relative 'proxies/sequence_proxy'
+require_relative 'proxies/neuron_connection_proxy'
+require_relative 'proxies/neuron_proxy'
 
 Neo4rubyConfig = HashUtility.symbolize_keys(YAML.load_file(PROJECT_ROOT + "/config/config.yml"))

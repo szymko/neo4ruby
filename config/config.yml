@@ -11,3 +11,11 @@ logger:
 redis:
   host: '127.0.0.1'
   port: 6379
+
+simulation:
+  alpha: 0.7
+  beta: 0.8
+  theta: 0.6
+
+  levenshtein:
+    max_distance: 3
