@@ -21,7 +21,6 @@ class Builders::GraphBuilderTest < MiniTest::Unit::TestCase
     builder = mock
     builder.expects(:build).times(4)
     builder.expects(:increment_word_count).times(4)
-    builder.expects(:save_properties).times(1)
 
     engine = mock
     engine.expects(:bind_nodes).times(4)
@@ -55,6 +54,7 @@ class Builders::GraphBuilderTest < MiniTest::Unit::TestCase
                                     assoc_engine: engine,
                                     payload_converter: converter)
     gb.build(payload, opts)
+    gb.save_graph
 
     e = ExpressionCollection.new
     delta = 0.01

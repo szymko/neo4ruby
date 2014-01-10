@@ -60,7 +60,7 @@ module Shared
 
       unless by == 0
         incr_prop = prop + by
-        set_prop(property, incr_prop)
+        set_property(property, incr_prop)
       end
     end
 
