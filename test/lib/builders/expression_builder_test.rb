@@ -14,7 +14,7 @@ class Builders::ExpressionBuilderTest < MiniTest::Unit::TestCase
   end
 
   def teardown
-    teardown_redis(TestHelper::REDIS_TEST_PREFIX + "*")
+    teardown_redis(Neo4rubyConfig[:experiment] + "::*")
     ExpressionProxy.destroy_all
   end
 

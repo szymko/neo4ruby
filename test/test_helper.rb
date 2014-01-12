@@ -6,11 +6,11 @@ require_relative '../app/neo4ruby'
 require_relative '../lib/server_manager'
 require_relative './mock'
 
+Neo4rubyConfig[:experiment] = "test"
 Neo4rubyConfig[:logger][:enabled] = false
 
 module TestHelper
 
-  REDIS_TEST_PREFIX = "test"
   TEST_DB_PATH = File.join(Dir.tmpdir, "neo4ruby_test_db")
 
   def teardown_redis(key_pattern)

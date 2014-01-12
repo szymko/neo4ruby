@@ -26,7 +26,7 @@ class PayloadProcessor
       res = {}
       body.each_pair { |k, v| res[k] = @strategies.reduce(v) { |r, s| r = s.perform(r) } }
     else
-      @strategies.each { |s| res = s.perform(body) }
+      res = @strategies.reduce(body) { |r, s| r = s.perform(r) }
     end
 
     res
