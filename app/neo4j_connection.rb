@@ -1,7 +1,6 @@
 require 'neo4j-wrapper'
 
 module Neo4jConnection
-  DEFAULT_PATH = 'db/search_engine'
 
   def self.change_db_path(path)
     Neo4j.shutdown
@@ -10,7 +9,7 @@ module Neo4jConnection
   end
 
   def self.db_path
-    ENV['EXPERIMENT'] ? ('db/' + ENV['EXPERIMENT']) : DEFAULT_PATH
+    "db/" + (ENV['EXPERIMENT'] || Neo4rubyConfig[:experiment])
   end
 
 end

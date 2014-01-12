@@ -1,8 +1,6 @@
 require_relative 'test_helper'
 require 'fileutils'
 
-RedisConnection.set_experiment(TestHelper::REDIS_TEST_PREFIX)
-
 class TestDb
   class Unit < MiniTest::Unit
 
@@ -11,7 +9,7 @@ class TestDb
     def _run_suites(*args)
       setup_test_db
       res = super
-      teardown_redis(TestHelper::REDIS_TEST_PREFIX + "*")
+      teardown_redis(Neo4rubyConfig[:experiment] + "::*")
       teardown_test_db
 
       res

@@ -4,8 +4,6 @@ class RedisConnection
 
   include Singleton
 
-  DEFAULT_PREFIX = "search_engine"
-
   def self.set_experiment(exp_name)
     instance.set_experiment(exp_name)
   end
@@ -23,8 +21,7 @@ class RedisConnection
   end
 
   def experiment_prefix
-    @experiment_prefix ||=
-                       (ENV['EXPERIMENT'] ? ENV['EXPERIMENT'] : DEFAULT_PREFIX)
+    @experiment_prefix ||= (ENV['EXPERIMENT'] || Neo4rubyConfig[:experiment])
   end
 
   def new_connection(opts)

@@ -12,10 +12,22 @@ redis:
   host: '127.0.0.1'
   port: 6379
 
-simulation:
-  alpha: 0.7
-  beta: 0.8
-  theta: 0.6
+search_engine:
+  simulation:
+    alpha: 0.7
+    beta: 0.8
+    theta: 1.0
+    initial_exc: 0.95
+    max_iterations: 20
+    min_change_rate: 0.2
 
-  levenshtein:
-    max_distance: 3
+  response_scanning:
+    limit: 5
+    levenshtein_max: 3
+    # stopwords after http://www.webconfs.com/stop-words.php
+    stopwords_file: 'data/stopwords'
+
+  answer_resolving:
+    limit: 5
+
+experiment: 'search_engine'

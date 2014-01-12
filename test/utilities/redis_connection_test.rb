@@ -3,7 +3,7 @@ require_relative '../test_helper'
 class RedisConnectionTest < MiniTest::Unit::TestCase
 
   def teardown
-    RedisConnection.set_experiment(TestHelper::REDIS_TEST_PREFIX)
+    RedisConnection.set_experiment(Neo4rubyConfig[:experiment])
   end
 
   def test_it_sets_experiment_name

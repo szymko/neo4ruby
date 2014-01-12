@@ -3,14 +3,20 @@ module NeuralNetwork
 
     attr_reader :steps, :neurons, :cache
 
-    def initialize(opts = {})
+    def initialize(init_strategy, opts = {})
       start_set = NeuronProxy.wrap(opts[:expression_set] || ExpressionProxy.all)
       @neurons = build_network(start_set)
       @steps = 0
 
-      @alpha = opts[:alpha] || Neo4rubyConfig[:simulation][:alpha]
-      @beta = opts[:beta] || Neo4rubyConfig[:simulation][:beta]
-      @theta = opts[:theta] || Neo4rubyConfig[:simulation][:theta]
+      @alpha = opts[:alpha] || Neo4rubyConfig[:search_engine][:simulation][:alpha]
+      @beta = opts[:beta] || Neo4rubyConfig[:search_engine][:simulation][:beta]
+      @theta = opts[:theta] || Neo4rubyConfig[:search_engine][:simulation][:theta]
+
+      @init_strategy = init_strategy
+    end
+
+    def startup(query)
+      @init_strategy.initialize_neurons(query, @cache)
     end
 
     def run
