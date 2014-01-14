@@ -27,7 +27,6 @@ class NeuronProxy < ModelProxy
   def propagate_excitation
     build_connections unless @cached_connections
     @cached_connections.each { |c| c[:neuron].increment_sum_by(exc * c[:weight]) }
-    #connections.each { |c| c.end_neuron.increment_sum_by(exc * c.weight) }
   end
 
   def build_connections(neuron_cache)

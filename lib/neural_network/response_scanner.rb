@@ -1,18 +1,17 @@
 module NeuralNetwork
-  class ResponseScanner
+  class ResponseScanner < BasicCommandUtilizer
 
-    def initialize(strategies, opts = {})
+    def initialize(commands, opts = {})
       @limit = opts[:scanning_limit] ||
                         Neo4rubyConfig[:search_engine][:response_scanning][:limit]
-      @strategies = strategies
+      super
     end
 
-    def scan(query, simulator)
-      best = simulator.neurons.sort { |n1, n2| n2.exc <=> n1.exc }.
-                               limit(@limit)
+    def scan(neurons, query)
+      best = neurons.sort { |n1, n2| n2.exc <=> n1.exc }
 
       res =  best.map { |n| { urls: n.urls, word: n.word, exc: n.exc } }
-      @strategies.reduce(res) { |r, s| r = s.perform(query, r) }.first(@limit)
+      apply_commands(res, query).first(@limit)
     end
 
   end

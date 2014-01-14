@@ -1,9 +1,9 @@
 require_relative '../../test_helper'
 
-class PayloadProcessingStrategies::WikiSpecialsCleanerTest < MiniTest::Unit::TestCase
+class PayloadProcessingCommands::WikiSpecialsCleanerTest < MiniTest::Unit::TestCase
 
   def setup
-    @cleaner = PayloadProcessingStrategies::WikiSpecialsCleaner.new
+    @cleaner = PayloadProcessingCommands::WikiSpecialsCleaner.new
   end
 
   def test_it_replaces_edit_links_with_dots

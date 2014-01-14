@@ -8,8 +8,8 @@ module NeuralNetwork
       @answers = []
     end
 
-    def scan(query, simulator)
-      @answers << @scanner.scan(query, simulator)
+    def scan(simulator, query)
+      @answers << @scanner.scan(simulator.neurons, query)
     end
 
 

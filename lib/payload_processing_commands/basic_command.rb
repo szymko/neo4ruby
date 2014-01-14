@@ -1,6 +1,6 @@
-module PayloadProcessingStrategies
+module PayloadProcessingCommands
 
-  class BasicStrategy
+  class BasicCommand
 
     def perform(payload)
       res = recursive_perform(payload)
@@ -9,7 +9,7 @@ module PayloadProcessingStrategies
 
     private
 
-    def recursive_perform(payload)
+    def recursive_perform(payload, args = nil)
       if payload.is_a? Array
         payload.map { |p| recursive_perform(p) }
       else

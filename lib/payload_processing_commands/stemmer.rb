@@ -1,6 +1,6 @@
 require 'text'
 
-module PayloadProcessingStrategies
+module PayloadProcessingCommands
 
   class Stemmer
 

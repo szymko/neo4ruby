@@ -1,5 +1,5 @@
 module NeuralNetwork
-  module ResponseScanningStrategies
+  module ResponseScanningCommands
 
     class StopwordRemover
 
@@ -9,7 +9,7 @@ module NeuralNetwork
         @stopwords = File.read(stopwords_path).split("\n")
       end
 
-      def perform(query, response)
+      def perform(response, query)
         response.delete_if do |n|
           @stopwords.member?(n[:word]) && !query.member?(n[:word])
         end

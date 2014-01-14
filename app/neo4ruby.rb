@@ -1,7 +1,7 @@
 require 'yaml'
 require_relative 'utilities/hash_utility'
 PROJECT_ROOT = File.join(File.dirname(File.absolute_path(__FILE__)), "/..")
-Neo4rubyConfig = HashUtility.symbolize_keys(YAML.load_file(PROJECT_ROOT + "/config/config.yml"))
+Neo4rubyConfig = Utilities::HashUtility.symbolize_keys(YAML.load_file(PROJECT_ROOT + "/config/config.yml"))
 
 require_relative 'proxies/redis_proxy'
 require_relative 'redis_connection'

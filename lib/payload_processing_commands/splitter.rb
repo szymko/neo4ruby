@@ -1,6 +1,6 @@
-module PayloadProcessingStrategies
+module PayloadProcessingCommands
 
-  class Splitter < PayloadProcessingStrategies::BasicStrategy
+  class Splitter < PayloadProcessingCommands::BasicCommand
 
     def initialize(opts)
       @type = opts[:type]

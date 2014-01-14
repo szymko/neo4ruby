@@ -10,7 +10,7 @@ module NeuralNetwork
     def answer_query(query)
       @simulator.startup(query)
       @simulator.run do |sim_state|
-        @resolver.scan(query, sim_state)
+        @resolver.scan(sim_state, query)
         @terminator.terminate?(sim_state)
       end
 
