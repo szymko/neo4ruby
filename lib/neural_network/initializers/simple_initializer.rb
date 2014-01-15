@@ -4,7 +4,7 @@ module NeuralNetwork
 
       def initialize(opts = {})
         @initial_exc = opts[:initial_exc] ||
-                       Neo4rubyConfig[:simulation][:initial_exc]
+                       Neo4rubyConfig[:search_engine][:simulation][:initial_exc]
       end
 
       def set_exc(neuron)

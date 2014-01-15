@@ -4,11 +4,11 @@ require_relative './app/neo4ruby'
 trap("INT"){ exit() }
 
 begin
-  strategies = [PayloadProcessingStrategies::WikiSpecialsCleaner.new,
-                PayloadProcessingStrategies::Splitter.new(type: :sentence),
-                PayloadProcessingStrategies::Splitter.new(type: :word, word_utility: true),
-                PayloadProcessingStrategies::Normalizer.new]
-  processor = PayloadProcessor.new(strategies)
+  commands = [PayloadProcessingCommands::WikiSpecialsCleaner.new,
+              PayloadProcessingCommands::Splitter.new(type: :sentence),
+              PayloadProcessingCommands::Splitter.new(type: :word, word_utility: true),
+              PayloadProcessingCommands::Normalizer.new]
+  processor = PayloadProcessor.new(commands)
   converter = PayloadConvertingStrategies::ObligatoryOptionalConverter.new
   builder = Builders::GraphBuilder.new(expression_builder: Builders::ExpressionBuilder.new, assoc_engine: AssocEngine.new, payload_converter: converter)
 

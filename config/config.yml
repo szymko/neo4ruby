@@ -18,7 +18,7 @@ search_engine:
     beta: 0.8
     theta: 1.0
     initial_exc: 0.95
-    max_iterations: 20
+    max_iterations: 10
     min_change_rate: 0.2
 
   response_scanning:
@@ -28,6 +28,6 @@ search_engine:
     stopwords_file: 'data/stopwords'
 
   answer_resolving:
-    limit: 5
+    limit: 10
 
-experiment: 'search_engine'
+experiment: 'exp1'

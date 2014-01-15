@@ -19,6 +19,11 @@ module NeuralNetwork
       @init_strategy.initialize_neurons(query, @cache)
     end
 
+    def reset
+      @steps = 0
+      @neurons.each { |n| n.reset }
+    end
+
     def run
       go_on = true
       while(go_on)

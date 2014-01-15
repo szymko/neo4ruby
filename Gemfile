@@ -4,8 +4,18 @@ source 'https://rubygems.org/'
 #ruby=jruby-1.7.4
 
 gem 'neo4j-wrapper'
-gem 'pry'
 gem 'bunny', '>= 0.10.0'
-gem 'mocha', require: false
 gem 'text'
 gem 'redis'
+gem 'sinatra'
+gem 'sinatra-contrib'
+gem 'puma'
+
+group :development, :test do
+  gem 'shotgun'
+  gem 'pry'
+end
+
+group :test do
+  gem 'mocha', require: false
+end

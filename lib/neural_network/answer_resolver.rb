@@ -22,6 +22,10 @@ module NeuralNetwork
       res.reduce({}) { |h, e| h[e[0]] = e[1]; h }
     end
 
+    def reset
+      @answers = []
+    end
+
     private
 
     def add_to_rating(neuron)

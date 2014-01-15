@@ -22,6 +22,10 @@ module NeuralNetwork
       end
     end
 
+    def reset
+      @activity_history = []
+    end
+
     private
 
     def compute_activity(neurons)

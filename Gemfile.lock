@@ -2,6 +2,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     amq-protocol (1.9.2)
+    backports (3.4.0)
     bunny (1.0.7)
       amq-protocol (>= 1.9.2)
     coderay (1.1.0)
@@ -10,6 +11,7 @@ GEM
     method_source (0.8.2)
     mocha (0.14.0)
       metaclass (~> 0.0.1)
+    multi_json (1.8.4)
     neo4j-community (1.9.5-java)
     neo4j-core (2.3.0-java)
       neo4j-community (>= 1.9.M05, < 2.0)
@@ -17,16 +19,43 @@ GEM
     neo4j-cypher (1.0.2)
     neo4j-wrapper (2.3.0-java)
       neo4j-core (= 2.3.0)
+    pry (0.9.12.4)
+      coderay (~> 1.0)
+      method_source (~> 0.8)
+      slop (~> 3.4)
     pry (0.9.12.4-java)
       coderay (~> 1.0)
       method_source (~> 0.8)
       slop (~> 3.4)
       spoon (~> 0.0)
+    puma (2.7.1)
+      rack (>= 1.1, < 2.0)
+    puma (2.7.1-java)
+      rack (>= 1.1, < 2.0)
+    rack (1.5.2)
+    rack-protection (1.5.1)
+      rack
+    rack-test (0.6.2)
+      rack (>= 1.0)
     redis (3.0.6)
+    shotgun (0.9)
+      rack (>= 1.0)
+    sinatra (1.4.4)
+      rack (~> 1.4)
+      rack-protection (~> 1.4)
+      tilt (~> 1.3, >= 1.3.4)
+    sinatra-contrib (1.4.2)
+      backports (>= 2.0)
+      multi_json
+      rack-protection
+      rack-test
+      sinatra (~> 1.4.0)
+      tilt (~> 1.3)
     slop (3.4.7)
     spoon (0.0.4)
       ffi
     text (1.2.3)
+    tilt (1.4.1)
 
 PLATFORMS
   java
@@ -36,5 +65,9 @@ DEPENDENCIES
   mocha
   neo4j-wrapper
   pry
+  puma
   redis
+  shotgun
+  sinatra
+  sinatra-contrib
   text

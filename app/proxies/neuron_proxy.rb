@@ -8,6 +8,12 @@ class NeuronProxy < ModelProxy
     @exc ||= 0
   end
 
+  def reset
+    @exc = 0
+    @prev_exc = 0
+    @input_sum = 0
+  end
+
   def prev_exc
     @prev_exc ||= 0
   end
