@@ -34,7 +34,7 @@ class ServerManager
 
   def run
     @queue = @options[:queue] || DEFAULT_QUEUE
-    @experiment = @options[:experiment] || DEFAULT_EXPERIMENT
+    @experiment = @options[:experiment] || Neo4rubyConfig[:experiment]
 
     @server = Neo4rubyServer.new(payload_processor: @processor, graph_builder: @graph_builder)
 

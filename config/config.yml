@@ -30,4 +30,4 @@ search_engine:
   answer_resolving:
     limit: 10
 
-experiment: 'exp1'
+experiment: 'load_test2'
